@@ -11,7 +11,7 @@ resources to be created with NixOps:
   * 3 private subnets
   * 3 public subnets
   * A NAT Subnet.
-  * Internet gateways
+  * Internet gateway
   * 4 Elastic IPs
 - EC2 Instances:
   * 2 Vault servers
