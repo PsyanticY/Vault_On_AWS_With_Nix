@@ -1,13 +1,13 @@
-{ region    ? "us-east-1"
-, account   ? "account"
-, accountId ? "xxxxxxxxxxx"
+{ region      ? "us-east-1"
+, accessKeyId ? "None"
+, accountId   ? "xxxxxxxxxxx"
+, ...
 }:
 
 {
 resources.s3Buckets.Vault-bucket = 
   { 
-    inherit region;
-    accessKeyId = account;
+    inherit region accessKeyId;
     name = "Vault-bucket";
     policy = builtins.toJSON ''
       {
@@ -46,7 +46,7 @@ resources.iamRoles =
       consul-server-role =
         { resources, ... }:
         {
-          accessKeyId = account;
+          inherit accessKeyId;
           policy = builtins.toJSON ''
           {
           Statement =  
@@ -69,7 +69,7 @@ resources.iamRoles =
       vault-role =
         { resources, ... }:
         {
-          accessKeyId = account;
+          inherit accessKeyId;
           policy = builtins.toJSON ''
             {
               Statement = ${vaultAndConsulPolicy};
