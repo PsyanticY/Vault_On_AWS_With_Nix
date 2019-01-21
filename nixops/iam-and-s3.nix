@@ -5,7 +5,6 @@
 
 {
 resources.s3Buckets.Vault-bucket = 
-  { resources, ... }:
   { 
     inherit region;
     accessKeyId = account;
@@ -33,26 +32,49 @@ resources.s3Buckets.Vault-bucket =
     '';
   };
 
-resources.iamRoles.consul-server-role =
-  { resources, ... }:
-  {
-    accessKeyId = account;
-    policy = builtins.toJSON ''
+resources.iamRoles = 
+  let 
+    vaultAndConsulPolicy = builtins.toJSON ''
       {
-        Statement =  
-          {
-            Action = [
-              "s3:Get*"
-              "s3:Put*"
-              "s3:List*"
-            ];
-            Effect = "Allow";
-            Resource = [
-              "arn:aws:s3:::${resources.s3Buckets.Vault-bucket.name}"
-	      "arn:aws:s3:::${resources.s3Buckets.Vault-bucket.name}/*"
-            ];
-          };
-      }
+        Action = [ "ec2:DescribeInstances" ];
+        Resource = "*";
+        Effect = "Allow";
+      };
     '';
+  in
+    {
+      consul-server-role =
+        { resources, ... }:
+        {
+          accessKeyId = account;
+          policy = builtins.toJSON ''
+          {
+          Statement =  
+            {
+              Action = [
+                "s3:Get*"
+                "s3:Put*"
+                "s3:List*"
+              ];
+              Effect = "Allow";
+              Resource = [
+                "arn:aws:s3:::${resources.s3Buckets.Vault-bucket.name}"
+	        "arn:aws:s3:::${resources.s3Buckets.Vault-bucket.name}/*"
+              ];
+            } ++ vaultAndConsulPolicy;
+          };
+          '';
+        };
+
+      vault-role =
+        { resources, ... }:
+        {
+          accessKeyId = account;
+          policy = builtins.toJSON ''
+            {
+              Statement = ${vaultAndConsulPolicy};
+            };
+          '';
+        };
     };
 }
