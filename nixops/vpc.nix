@@ -12,6 +12,30 @@
 , ...
 }:
 {
+  resources.elasticIPs.nat-eip =
+    {
+      inherit region accessKeyId;
+      vpc = true;
+    };
+   
+  resources.elasticIPs.bastion-eip =
+    {
+      inherit region accessKeyId;
+      vpc = true;
+    };
+   
+  resources.elasticIPs.vault1-eip =
+    {
+      inherit region accessKeyId;
+      vpc = true;
+    };
+    
+  resources.elasticIPs.vault2-eip =
+    {
+      inherit region accessKeyId;
+      vpc = true;
+    };
+    
   resources.vpc.vaultVpc =
     {
       inherit region accessKeyId;
@@ -22,14 +46,7 @@
       enableDnsHostnames = supportDns;
     };
 
-  # Recurse this to create 5 EIP for full coverage
-  resources.elasticIPs.nat-eip =
-    {
-      inherit region accessKeyId;
-      vpc = true;
-    };
-    
-  resources.vpcSubnets.nat-subnet = 
+resources.vpcSubnets.nat-subnet = 
     { resources, ... }:
     {
       inherit region accessKeyId;
