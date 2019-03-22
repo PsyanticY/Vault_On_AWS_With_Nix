@@ -17,14 +17,14 @@ resources.s3Buckets.Vault-bucket =
               Sid = "denyDeletion";
               Action = [ "s3:DeleteBucket" ];
               Effect = "Deny";
-              Resource = "arn:aws:s3:::pdx-vault-assets";
+              Resource = "arn:aws:s3:::vaultbackup";
               Principal = { AWS = [ "*" ]; };
           };
           {
               Sid = "denyObjectDeletion";
               Action = [ "s3:DeleteObject" ];
               Effect = "Deny";
-              Resource = "arn:aws:s3:::pdx-vault-assets/*";
+              Resource = "arn:aws:s3:::vaultbackup/*";
               Principal = { AWS = [ "*" ]; };
           };
         ];
