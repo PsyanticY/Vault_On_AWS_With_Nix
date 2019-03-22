@@ -19,7 +19,7 @@
       cidrBlock = "10.0.0.0/16";
       instanceTenancy = if enableTenancy then "dedicated" else "default";
       enableDnsSupport = supportDns;
-      # FIXME: enableDnsHostnames = enableDnsSupport;
+      enableDnsHostnames = supportDns;
     };
 
   # Recurse this to create 5 EIP for full coverage
