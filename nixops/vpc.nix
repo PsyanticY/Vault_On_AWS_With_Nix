@@ -46,7 +46,7 @@
       enableDnsHostnames = supportDns;
     };
 
-resources.vpcSubnets.nat-subnet = 
+  resources.vpcSubnets.nat-subnet = 
     { resources, ... }:
     {
       inherit region accessKeyId;
