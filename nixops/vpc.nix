@@ -54,7 +54,7 @@
     {
       inherit region accessKeyId;
       vpcId = resources.vpc.vpc.vpcId;
-      tags = {Source = "NixOps"; VPC: resources.vpc.vpc;} // iGWTags;
+      tags = {Source = "NixOps"; VPC = resources.vpc.vpc;} // iGWTags;
     }; 
 
   resources.vpcSubnets = 
