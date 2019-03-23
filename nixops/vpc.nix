@@ -9,6 +9,9 @@
 , natTags       ? {}    # tags specific to the nat subnet
 , natAZ         ? "us-east-1c"
 
+, subnetTags    ? {}  # should be something like this { foo = "bar"; xyzzy = "bla"; }
+, iGWTags       ? {}  # should be something like this { foo = "bar"; xyzzy = "bla"; }
+
 , ...
 }:
 {
@@ -45,7 +48,36 @@
       enableDnsSupport = supportDns;
       enableDnsHostnames = supportDns;
     };
+    
+  resources.vpcInternetGateways.igw =
+    { resources, ... }:
+    {
+      inherit region accessKeyId;
+      vpcId = resources.vpc.vpc.vpcId;
+      tags = {Source = "NixOps"; VPC: resources.vpc.vpc;} // iGWTags;
+    }; 
 
+  resources.vpcSubnets = 
+    let
+      subnet = {cidr, zone}:
+        { resources, ... }:
+        {
+          inherit region zone accessKeyId;
+          vpcId = resources.vpc.vpc.vpcId;
+          cidrBlock = cidr;
+          mapPublicIpOnLaunch = false;
+          tags = subnetTags // {Source = "NixOps";};
+        };
+    in
+    {
+      public-a = subnet { cidr = "10.0.0.0/19"; zone = "us-east-1a"; };
+      public-b = subnet { cidr = "10.0.32.0/19"; zone = "us-east-1b"; };
+      public-c = subnet { cidr = "10.0.64.0/19"; zone = "us-east-1c"; };
+      private-a = subnet { cidr = "10.0.96.0/19"; zone = "us-east-1a"; };
+      private-b = subnet { cidr = "10.0.128.0/19"; zone = "us-east-1b"; };
+      private-c = subnet { cidr = "10.0.160.0/19"; zone = "us-east-1c"; };
+    };
+    
   resources.vpcSubnets.nat-subnet = 
     { resources, ... }:
     {
