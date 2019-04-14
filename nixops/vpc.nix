@@ -27,13 +27,13 @@
       vpc = true;
     };
    
-  resources.elasticIPs.vault1-eip =
+  resources.elasticIPs.vault-master-eip =
     {
       inherit region accessKeyId;
       vpc = true;
     };
     
-  resources.elasticIPs.vault2-eip =
+  resources.elasticIPs.vault-failover-eip =
     {
       inherit region accessKeyId;
       vpc = true;

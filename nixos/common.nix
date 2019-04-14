@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   networking.timeServers = [];
-  time.timeZone = pkgs.lib.mkOverride 4 "Europe/Berlin";
+  time.timeZone = lib.mkOverride 5 "UTC" ;
   environment.systemPackages = [ pkgs.vim pkgs.python3 pkgs.jq pkgs.awscli pkgs.tree pkgs.curl ];
 
   # datadog monitoring
