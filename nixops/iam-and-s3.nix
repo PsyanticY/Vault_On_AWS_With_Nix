@@ -77,4 +77,9 @@ resources.iamRoles =
           '';
         };
     };
+
+resources.ec2KeyPairs.kp =
+  { 
+    inherit region; accessKeyId = account; 
+  };
 }
