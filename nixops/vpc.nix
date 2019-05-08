@@ -155,6 +155,27 @@ with (import <nixpkgs> {}).lib;
        publicIgwRoute = igwRoute { route-table = "publicRouteTable";};
        natIgwRoute = igwRoute { route-table = "natRouteTable";};
        privateNatRoute = natRoute { route-table = "privateRouteTable"; destinationBlock = "0.0.0.0/0";};
-       
+
      };
-}                                                                                                                 
+  resources.vpcEndpoints.vpcEndpoint =
+    { resources, ... }:
+    {
+      inherit region accessKeyId;
+      vpcId = resources.vpc.vaultVpc;
+      policy = builtins.toJSON
+        {
+          Statement = [
+            {
+              Action= "*";
+              Effect= "Allow";
+              Resource= "*";
+              Principal= "*";
+            }
+          ];
+        };
+      # make this better maybe
+      routeTableIds  = [ resources.vpcRouteTables.privateRouteTable resources.vpcRouteTables.publicRouteTable ];
+      serviceName = "com.amazonaws.${region}.s3";
+      tags = {Source = "NixOps"; Name = "${name}";};
+    };
+}
