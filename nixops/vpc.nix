@@ -11,7 +11,7 @@
 
 , subnetTags    ? {}  # should be something like this { foo = "bar"; xyzzy = "bla"; }
 , iGWTags       ? {}  # should be something like this { foo = "bar"; xyzzy = "bla"; }
-, natTags       ? {}
+
 , ...
 }:
 with (import <nixpkgs> {}).lib;
@@ -136,7 +136,7 @@ with (import <nixpkgs> {}).lib;
            routeTableId = resources.vpcRouteTables."${route-table}";
            destinationCidrBlock = destinationBlock;
            natGatewayId = resources.vpcNatGateways.nat;
-           tags = subnetTags // {{Source = "NixOps"; Name = "${name}";};
+           tags = subnetTags // {Source = "NixOps"; Name = "${name}";};
 
          };
        igwRoute = {route-table}: 
