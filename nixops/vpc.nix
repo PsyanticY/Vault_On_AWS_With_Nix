@@ -1,5 +1,5 @@
 { region        ? "ca-central-1"
-, accessKeyId   ? "None"
+, accessKeyId   ? "ops"
 
 , vpcTags       ? {}    # should be something like this { foo = "bar"; xyzzy = "bla"; }
 , enableTenancy ? false # whether to use dedicated hardware for the vpc.
@@ -22,6 +22,8 @@ with (import <nixpkgs> {}).lib;
         {
           inherit region accessKeyId;
           vpc = true;
+          # uncomment when this feature get merged
+          # persistOnDestroy = true;
         };
     in
       {

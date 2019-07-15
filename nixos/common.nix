@@ -3,6 +3,7 @@
   networking.timeServers = [];
   time.timeZone = lib.mkOverride 5 "UTC" ;
   environment.systemPackages = [ pkgs.vim pkgs.python3 pkgs.jq pkgs.awscli pkgs.tree pkgs.curl ];
+  environment.shellAliases = { tailf = "tail -f" ;};
 
   # datadog monitoring
   services.datadog-agent.enable = true;

@@ -57,6 +57,7 @@ in
         source = <keys/ldap.key>;
         mode = "0440";
       };
+      # make sure to ofc update this file
       services.sssd.config = ''
         [domain/default]
 
@@ -78,7 +79,7 @@ in
         ldap_id_use_start_tls = True
         access_provider = simple
         simple_allow_groups = ${concatStringsSep ", " ([ "fullAccess" ] ++ cfg.allowedGroups)}
-        simple_allow_users = dovah
+        simple_allow_users = dovahkin
         override_shell = /run/current-system/sw/bin/bash
 
         [sssd]
@@ -97,7 +98,7 @@ in
 
         [ssh]
       '';
-
+      # backdor user in case ldap is not responding
       users.users.dovah = {
       openssh.authorizedKeys.keys = [ "ssh-rsa xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ];
       useDefaultShell = true;

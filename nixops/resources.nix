@@ -8,6 +8,7 @@ resources.s3Buckets.Vault-bucket =
   { 
     inherit region accessKeyId;
     name = "vault-bucket123";
+    persistOnDestroy = true;
     # add rotation policy
   };
 

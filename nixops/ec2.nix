@@ -1,5 +1,5 @@
 { allowedGroups       ? []
-, region              ? "us-east-1"
+, region              ? "ca-central-1"
 , accessKeyId         ? "None"
 , rootVolumeSize      ? 50
 , vaultInstanceType   ? "m5.2xlarge"
@@ -7,6 +7,7 @@
 , consulAInstanceType ? "t2.medium"
 , consulCInstanceType ? "t2.large"
 , consulBInstanceType ? "t3.medium"
+, bastionInstanceType ? "t2.micro"
 , ...
 }:
 {
@@ -16,7 +17,7 @@
     {
 
       deployment.targetEnv = "ec2";
-      deployment.ec2.accessKeyId = account;
+      deployment.ec2.accessKeyId = accessKeyId;
       deployment.ec2.region = region;
       deployment.ec2.keyPair = resources.ec2KeyPairs.kp;
       deployment.ec2.ebsInitialRootDiskSize = rootVolumeSize;
@@ -37,7 +38,7 @@
       deployment.ec2.instanceProfile = resources.iamRoles.vault-role;
       deployment.ec2.subnetId = resources.vpcSubnets.public-a;
       deployment.ec2.instanceType = vaultInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.common resources.ec2SecurityGroups.vaultSG ];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultSG1 resources.ec2SecurityGroups.vaultSG2 resources.ec2SecurityGroups.vaultInterAccess];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       deployment.ec2.associatePublicIpAddress = true;
       deployment.ec2.elasticIPv4 = resources.elasticIPs.vault-master-eip;
@@ -53,7 +54,7 @@
       deployment.ec2.instanceProfile = resources.iamRoles.vault-role;
       deployment.ec2.subnetId = resources.vpcSubnets.public-c;
       deployment.ec2.instanceType = fVaultInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.common resources.ec2SecurityGroups.vaultSG ];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultSG1 resources.ec2SecurityGroups.vaultSG2 resources.ec2SecurityGroups.vaultInterAccess];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       deployment.ec2.associatePublicIpAddress = true;
       deployment.ec2.elasticIPv4 = resources.elasticIPs.vault-failover-eip;
@@ -73,7 +74,7 @@
       deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role;
       deployment.ec2.subnetId = resources.vpcSubnets.private-a;
       deployment.ec2.instanceType = consulAInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.common resources.ec2SecurityGroups.consulSG ];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       networking.hostName = "consul-server-a";
 
@@ -91,7 +92,7 @@
       deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role;
       deployment.ec2.subnetId = resources.vpcSubnets.private-b;
       deployment.ec2.instanceType = consulBInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.common resources.ec2SecurityGroups.consulSG ];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       networking.hostName = "consul-server-b";
 
@@ -109,11 +110,25 @@
       deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role;
       deployment.ec2.subnetId = resources.vpcSubnets.private-c;
       deployment.ec2.instanceType = consulCInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.common resources.ec2SecurityGroups.consulSG ];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       networking.hostName = "consul-server-c";
 
       require = [ ../nixos/consul-server.nix ];
+
+    };
+
+  bastion = { resources, config, lib, pkgs, name, ... }:
+    {
+
+      # comment those 3 lines if you don't want to use spot/persistent spot
+      deployment.ec2.subnetId = resources.vpcSubnets.public-b;
+      deployment.ec2.instanceType = bastionInstanceType;
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.common ];
+      deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
+      networking.hostName = "consul-server-c";
+
+      require = [ ../nixos/bastion-server.nix ];
 
     };
 }
