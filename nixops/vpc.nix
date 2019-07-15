@@ -11,7 +11,6 @@
 
 , subnetTags    ? {}  # should be something like this { foo = "bar"; xyzzy = "bla"; }
 , iGWTags       ? {}  # should be something like this { foo = "bar"; xyzzy = "bla"; }
-
 , ...
 }:
 with (import <nixpkgs> {}).lib;
@@ -45,11 +44,11 @@ with (import <nixpkgs> {}).lib;
     };
     
   resources.vpcInternetGateways.igw =
-    { resources, ... }:
+    { resources, config, ... }:
     {
       inherit region accessKeyId;
       vpcId = resources.vpc.vaultVpc;
-      tags = {Source = "NixOps"; Name = "${name}";} // iGWTags;
+      tags = {Source = "NixOps"; Name = "${config.deployment.name}";} // iGWTags;
     };
 
   resources.vpcNatGateways.nat =
@@ -64,13 +63,13 @@ with (import <nixpkgs> {}).lib;
   resources.vpcSubnets = 
     let
       subnet = {cidr, zone}:
-        { resources, name, ... }:
+        { resources, config, ... }:
         {
           inherit region zone accessKeyId;
           vpcId = resources.vpc.vaultVpc;
           cidrBlock = cidr;
           mapPublicIpOnLaunch = false;
-          tags = subnetTags // {Source = "NixOps"; Name = "${name}";};
+          tags = subnetTags // {Source = "NixOps"; Name = "${config.deployment.name}";};
         };
     in
     {
@@ -82,24 +81,24 @@ with (import <nixpkgs> {}).lib;
       private-c = subnet { cidr = "10.0.160.0/19"; zone = "ca-central-1b"; };
       
       nat-subnet = 
-       { resources, ... }:
+       { resources, config, ... }:
        {
          inherit region accessKeyId;
          vpcId = resources.vpc.vaultVpc;
          cidrBlock = natCidrBlock;
          zone = natAZ;
-         tags = {Source = "NixOps"; Name = "${name}";} // natTags;
+         tags = {Source = "NixOps"; Name = "${config.deployment.name}";} // natTags;
        };
      };
 
   resources.vpcRouteTables =
     let
       route = 
-      { resources, name, ... }:
+      { resources, config, ... }:
       {
         inherit region accessKeyId;
         vpcId = resources.vpc.vaultVpc;
-        tags = subnetTags // {Source = "NixOps"; Name = "${name}";};
+        tags = subnetTags // {Source = "NixOps"; Name = "${config.deployment.name}";};
 
       };
     in
@@ -115,12 +114,12 @@ with (import <nixpkgs> {}).lib;
       privateSubnets = [ "private-a" "private-b" "private-c" ];
       natSubnet = ["nat-subnet"];
       association = {subnet, route-table}:
-        { resources, name, ... }:
+        { resources, config, ... }:
         {
           inherit region accessKeyId;
           subnetId = resources.vpcSubnets."${subnet}";
           routeTableId = resources.vpcRouteTables."${route-table}";
-          tags = subnetTags // {Source = "NixOps"; Name = "${name}";};
+          tags = subnetTags // {Source = "NixOps"; Name = "${config.deployment.name}";};
         };
     in
       (builtins.listToAttrs (map (s: nameValuePair "igw-association-${s}" (association {subnet=s; route-table="publicRouteTable";}) ) (publicSubnets))) // 
@@ -136,17 +135,17 @@ with (import <nixpkgs> {}).lib;
            routeTableId = resources.vpcRouteTables."${route-table}";
            destinationCidrBlock = destinationBlock;
            natGatewayId = resources.vpcNatGateways.nat;
-           tags = subnetTags // {Source = "NixOps"; Name = "${name}";};
+           tags = subnetTags // {Source = "NixOps"; Name = "${config.deployment.name}";};
 
          };
        igwRoute = {route-table}: 
-         { resources, name, ... }:
+         { resources, config, ... }:
          {
            inherit region accessKeyId;
            routeTableId = resources.vpcRouteTables."${route-table}";
            destinationCidrBlock = "0.0.0.0/0";
            gatewayId = resources.vpcInternetGateways.igw; 
-           tags = subnetTags // {Source = "NixOps"; Name = "${name}";};
+           tags = subnetTags // {Source = "NixOps"; Name = "${config.deployment.name}";};
         };
      in
      {
@@ -160,7 +159,7 @@ with (import <nixpkgs> {}).lib;
 
      };
   resources.vpcEndpoints.vpcEndpoint =
-    { resources, ... }:
+    { resources, config, ... }:
     {
       inherit region accessKeyId;
       vpcId = resources.vpc.vaultVpc;
@@ -178,6 +177,6 @@ with (import <nixpkgs> {}).lib;
       # make this better maybe
       routeTableIds  = [ resources.vpcRouteTables.privateRouteTable resources.vpcRouteTables.publicRouteTable ];
       serviceName = "com.amazonaws.${region}.s3";
-      tags = {Source = "NixOps"; Name = "${name}";};
+      tags = {Source = "NixOps"; Name = "${config.deployment.name}";};
     };
 }

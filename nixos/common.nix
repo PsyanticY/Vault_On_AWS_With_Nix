@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   networking.timeServers = [];
   time.timeZone = lib.mkOverride 5 "UTC" ;

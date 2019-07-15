@@ -1,6 +1,6 @@
 { allowedGroups       ? []
 , region              ? "ca-central-1"
-, accessKeyId         ? "None"
+, accessKeyId         ? "ops"
 , rootVolumeSize      ? 50
 , vaultInstanceType   ? "m5.2xlarge"
 , fVaultInstanceType  ? "m5.large"
@@ -8,6 +8,7 @@
 , consulCInstanceType ? "t2.large"
 , consulBInstanceType ? "t3.medium"
 , bastionInstanceType ? "t2.micro"
+, commonSG            ? "default"
 , ...
 }:
 {
@@ -15,7 +16,7 @@
 
   defaults = { resources, config, lib, pkgs, ... }:
     {
-
+      deployment.ec2.ami = "ami-0745a8937e0d83eac";
       deployment.targetEnv = "ec2";
       deployment.ec2.accessKeyId = accessKeyId;
       deployment.ec2.region = region;
@@ -35,10 +36,10 @@
   vault-master = { resources, config, lib, pkgs, name, ... }:
     {
 
-      deployment.ec2.instanceProfile = resources.iamRoles.vault-role;
+      deployment.ec2.instanceProfile = resources.iamRoles.vault-role.name;
       deployment.ec2.subnetId = resources.vpcSubnets.public-a;
       deployment.ec2.instanceType = vaultInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultSG1 resources.ec2SecurityGroups.vaultSG2 resources.ec2SecurityGroups.vaultInterAccess];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultSG1.name resources.ec2SecurityGroups.vaultSG2.name resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       deployment.ec2.associatePublicIpAddress = true;
       deployment.ec2.elasticIPv4 = resources.elasticIPs.vault-master-eip;
@@ -51,10 +52,10 @@
   vault-failover = { resources, config, lib, pkgs, name, ... }:
     {
 
-      deployment.ec2.instanceProfile = resources.iamRoles.vault-role;
+      deployment.ec2.instanceProfile = resources.iamRoles.vault-role.name;
       deployment.ec2.subnetId = resources.vpcSubnets.public-c;
       deployment.ec2.instanceType = fVaultInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultSG1 resources.ec2SecurityGroups.vaultSG2 resources.ec2SecurityGroups.vaultInterAccess];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultSG1.name resources.ec2SecurityGroups.vaultSG2.name resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       deployment.ec2.associatePublicIpAddress = true;
       deployment.ec2.elasticIPv4 = resources.elasticIPs.vault-failover-eip;
@@ -71,10 +72,10 @@
       deployment.ec2.spotInstanceRequestType = "persistent";
       deployment.ec2.spotInstanceInterruptionBehavior = "stop";
       deployment.ec2.spotInstancePrice = 999; 
-      deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role;
+      deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role.name;
       deployment.ec2.subnetId = resources.vpcSubnets.private-a;
       deployment.ec2.instanceType = consulAInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess ];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       networking.hostName = "consul-server-a";
 
@@ -89,10 +90,10 @@
       deployment.ec2.spotInstanceRequestType = "persistent";
       deployment.ec2.spotInstanceInterruptionBehavior = "stop";
       deployment.ec2.spotInstancePrice = 999; 
-      deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role;
+      deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role.name;
       deployment.ec2.subnetId = resources.vpcSubnets.private-b;
       deployment.ec2.instanceType = consulBInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess ];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       networking.hostName = "consul-server-b";
 
@@ -107,10 +108,10 @@
       deployment.ec2.spotInstanceRequestType = "persistent";
       deployment.ec2.spotInstanceInterruptionBehavior = "stop";
       deployment.ec2.spotInstancePrice = 999; 
-      deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role;
+      deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role.name;
       deployment.ec2.subnetId = resources.vpcSubnets.private-c;
       deployment.ec2.instanceType = consulCInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess ];
+      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       networking.hostName = "consul-server-c";
 
@@ -124,9 +125,10 @@
       # comment those 3 lines if you don't want to use spot/persistent spot
       deployment.ec2.subnetId = resources.vpcSubnets.public-b;
       deployment.ec2.instanceType = bastionInstanceType;
-      deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.common ];
+      deployment.ec2.securityGroupIds = [ commonSG resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
       networking.hostName = "consul-server-c";
+      deployment.ec2.associatePublicIpAddress = true;
 
       require = [ ../nixos/bastion-server.nix ];
 
