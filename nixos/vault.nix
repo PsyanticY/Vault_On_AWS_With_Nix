@@ -5,8 +5,13 @@
   # add checks for those systemd units: vault consul client
   # ...
   # ...
+  # we need to set this 
+  environment.shellInit = ''
+    export VAULT_ADDR=http://127.0.0.1:8201
+  '';
+  services.vault.address = "127.0.0.1:8201";
   services.vault.enable = true;
-  services.vault.address = "0.0.0.0:8200";
+  # these options are related to the internal stuff not to the ui
   services.vault.tlsKeyFile = "/etc/keys/dovah.key";
   services.vault.tlsCertFile = "/etc/keys/dovah.crt";
   services.vault.storageBackend = "consul";
