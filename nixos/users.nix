@@ -33,7 +33,7 @@ in
 
       services.sssd.enable = true;
       services.sssd.sshAuthorizedKeysIntegration = true;
-      services.sssd.sssdStrictAccess = true;
+      security.pam.services.sshd.sssdStrictAccess = true;
 
       security.sudo.extraConfig = ''
         dovah ALL=(ALL) NOPASSWD:ALL

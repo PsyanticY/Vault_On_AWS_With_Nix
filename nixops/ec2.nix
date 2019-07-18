@@ -25,11 +25,8 @@
       deployment.ec2.tags.deployer = "psyanticy@dovah.com";
 
       require = [
-      ../nixos/users.nix
       ../nixos/common.nix
       ];
-      services.ldap.enable = true;
-      services.ldap.allowedGroups = allowedGroups;
 
     };
 
@@ -40,7 +37,7 @@
       deployment.ec2.subnetId = resources.vpcSubnets.public-a;
       deployment.ec2.instanceType = vaultInstanceType;
       deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultSG1.name resources.ec2SecurityGroups.vaultSG2.name resources.ec2SecurityGroups.vaultInterAccess.name ];
-      deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
+      deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
       deployment.ec2.associatePublicIpAddress = true;
       deployment.ec2.elasticIPv4 = resources.elasticIPs.vault-master-eip;
       networking.hostName = "vault-master";
@@ -56,7 +53,7 @@
       deployment.ec2.subnetId = resources.vpcSubnets.public-c;
       deployment.ec2.instanceType = fVaultInstanceType;
       deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultSG1.name resources.ec2SecurityGroups.vaultSG2.name resources.ec2SecurityGroups.vaultInterAccess.name ];
-      deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
+      deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
       deployment.ec2.associatePublicIpAddress = true;
       deployment.ec2.elasticIPv4 = resources.elasticIPs.vault-failover-eip;
       networking.hostName = "vault-failover";
@@ -76,7 +73,7 @@
       deployment.ec2.subnetId = resources.vpcSubnets.private-a;
       deployment.ec2.instanceType = consulAInstanceType;
       deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
-      deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
+      deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
       networking.hostName = "consul-server-a";
 
       require = [ ../nixos/consul-server.nix ];
@@ -94,7 +91,7 @@
       deployment.ec2.subnetId = resources.vpcSubnets.private-b;
       deployment.ec2.instanceType = consulBInstanceType;
       deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
-      deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
+      deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
       networking.hostName = "consul-server-b";
 
       require = [ ../nixos/consul-server.nix ];
@@ -112,7 +109,7 @@
       deployment.ec2.subnetId = resources.vpcSubnets.private-c;
       deployment.ec2.instanceType = consulCInstanceType;
       deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
-      deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
+      deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
       networking.hostName = "consul-server-c";
 
       require = [ ../nixos/consul-server.nix ];
@@ -126,7 +123,7 @@
       deployment.ec2.subnetId = resources.vpcSubnets.public-b;
       deployment.ec2.instanceType = bastionInstanceType;
       deployment.ec2.securityGroupIds = [ commonSG resources.ec2SecurityGroups.vaultInterAccess.name ];
-      deployment.ec2.tags.Name = "${config.deployment.name}.${name}.";
+      deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
       networking.hostName = "consul-server-c";
       deployment.ec2.associatePublicIpAddress = true;
 
