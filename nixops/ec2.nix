@@ -68,12 +68,13 @@
       # comment those 3 lines if you don't want to use spot/persistent spot
       deployment.ec2.spotInstanceRequestType = "persistent";
       deployment.ec2.spotInstanceInterruptionBehavior = "stop";
-      deployment.ec2.spotInstancePrice = 999; 
+      deployment.ec2.spotInstancePrice = 999;
       deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role.name;
       deployment.ec2.subnetId = resources.vpcSubnets.private-a;
       deployment.ec2.instanceType = consulAInstanceType;
       deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
+      deployment.ec2.tags.consul-server = "consul-server";
       networking.hostName = "consul-server-a";
 
       require = [ ../nixos/consul-server.nix ];
@@ -86,12 +87,13 @@
       # comment those 3 lines if you don't want to use spot/persistent spot
       deployment.ec2.spotInstanceRequestType = "persistent";
       deployment.ec2.spotInstanceInterruptionBehavior = "stop";
-      deployment.ec2.spotInstancePrice = 999; 
+      deployment.ec2.spotInstancePrice = 999;
       deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role.name;
       deployment.ec2.subnetId = resources.vpcSubnets.private-b;
       deployment.ec2.instanceType = consulBInstanceType;
       deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
+      deployment.ec2.tags.consul-server = "consul-server";
       networking.hostName = "consul-server-b";
 
       require = [ ../nixos/consul-server.nix ];
@@ -104,12 +106,13 @@
       # comment those 3 lines if you don't want to use spot/persistent spot
       deployment.ec2.spotInstanceRequestType = "persistent";
       deployment.ec2.spotInstanceInterruptionBehavior = "stop";
-      deployment.ec2.spotInstancePrice = 999; 
+      deployment.ec2.spotInstancePrice = 999;
       deployment.ec2.instanceProfile = resources.iamRoles.consul-server-role.name;
       deployment.ec2.subnetId = resources.vpcSubnets.private-c;
       deployment.ec2.instanceType = consulCInstanceType;
       deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
+      deployment.ec2.tags.consul-server = "consul-server";
       networking.hostName = "consul-server-c";
 
       require = [ ../nixos/consul-server.nix ];
