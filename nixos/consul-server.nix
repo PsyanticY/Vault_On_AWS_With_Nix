@@ -12,3 +12,6 @@
   services.consulAws.keyFile = "/run/keys/dovah.key";
   services.consulAws.tagKey = "consul-server";
   services.consulAws.tagValue = "consul-server";
+  services.consulAws.extraConfig = {
+    bootstrap_expect = 3;
+  };

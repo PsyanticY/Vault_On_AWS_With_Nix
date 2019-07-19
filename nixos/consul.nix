@@ -19,7 +19,8 @@ let
       "provider=aws tag_key=${cfg.tagKey} tag_value=${cfg.tagValue}"
     ];
     
-  };
+  } // cfg.extraConfig;
+
 in
 {
 
@@ -93,11 +94,19 @@ in
           tag value consul use to get other consul servers
         '';
       };
+
+      extraConfig = mkOption {
+        default = { };
+        description = ''
+          Extra configuration options which are serialized to json and added
+          to the config.json file.
+        '';
+      };
     };
   };
 
   config = mkIf cfg.enable {
-    
+
      environment = {
         etc."consul.json".text = builtins.toJSON configOptions;
         # We need consul.d to exist for consul to start
