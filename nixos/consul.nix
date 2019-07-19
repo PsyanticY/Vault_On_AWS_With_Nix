@@ -62,6 +62,18 @@ in
         '';
       };
 
+      leaveOnStop = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          If enabled, causes a leave action to be sent when closing consul.
+          This allows a clean termination of the node, but permanently removes
+          it from the cluster. You probably don't want this option unless you
+          are running a node which going offline in a permanent / semi-permanent
+          fashion.
+        '';
+      };
+
       webUi = mkOption {
         type = types.bool;
         default = false;
@@ -101,7 +113,9 @@ in
           ExecReload = "${pkgs.consul.bin}/bin/consul reload";
           Restart = "on-failure";
           TimeoutStartSec = "infinity";
-        };
+        } // (optionalAttrs (cfg.leaveOnStop) {
+          ExecStop = "${pkgs.consul.bin}/bin/consul leave";
+        });
         path = with pkgs; [ iproute gnugrep gawk consul ];
       };
    };
