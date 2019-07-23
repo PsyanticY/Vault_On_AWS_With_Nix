@@ -42,7 +42,7 @@
       deployment.ec2.elasticIPv4 = resources.elasticIPs.vault-master-eip;
       networking.hostName = "vault-master";
 
-      require = [ ../nixos/vault.nix ];
+      require = [ ../nixos/vault-server.nix ];
 
     };
 
@@ -58,7 +58,7 @@
       deployment.ec2.elasticIPv4 = resources.elasticIPs.vault-failover-eip;
       networking.hostName = "vault-failover";
 
-      require = [ ../nixos/vault.nix ];
+      require = [ ../nixos/vault-server.nix ];
 
     };
 
