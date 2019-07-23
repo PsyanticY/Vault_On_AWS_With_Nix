@@ -62,7 +62,7 @@
 
     };
 
-  consul-1 = { resources, config, lib, pkgs, name, ... }:
+  consul-a = { resources, config, lib, pkgs, name, ... }:
     {
 
       # comment those 3 lines if you don't want to use spot/persistent spot
@@ -81,7 +81,7 @@
 
     };
 
-  consul-2 = { resources, config, lib, pkgs, name, ... }:
+  consul-b = { resources, config, lib, pkgs, name, ... }:
     {
 
       # comment those 3 lines if you don't want to use spot/persistent spot
@@ -100,7 +100,7 @@
 
     };
 
-  consul-3 = { resources, config, lib, pkgs, name, ... }:
+  consul-c = { resources, config, lib, pkgs, name, ... }:
     {
 
       # comment those 3 lines if you don't want to use spot/persistent spot
@@ -127,7 +127,7 @@
       deployment.ec2.instanceType = bastionInstanceType;
       deployment.ec2.securityGroupIds = [ commonSG resources.ec2SecurityGroups.vaultInterAccess.name ];
       deployment.ec2.tags.Name = "${config.deployment.name}.${name}";
-      networking.hostName = "consul-server-c";
+      networking.hostName = "vault-bastion";
       deployment.ec2.associatePublicIpAddress = true;
 
       require = [ ../nixos/bastion-server.nix ];
