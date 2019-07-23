@@ -25,6 +25,10 @@ in
   '';
   networking.firewall.enable = true;
   networking.firewall.allowedTCPPorts = [ 8200 8500 ];
+  systemd.services.vault.serviceConfig = {
+    User = builtins.mkForce null;
+    Group = builtins.mkForce null;
+  };
   services.vault.enable = true;
   services.vault.package = vault-bin;
   services.vault.address = "127.0.0.1:8201";
