@@ -17,7 +17,7 @@ resources to be created with NixOps:
   * 2 Vault servers
   * 2 Consul servers (will ommit the 3 Consul Client cause i don't know why they are used for)
   * a Bastion host.
-- Security groups: 
+- Security groups:
   * 1 For Bastion host: external workd access.
   * 1 for internal access between all the Instances.
   * 1 - 5 attached to vault server to serve external world requests.
@@ -31,3 +31,8 @@ We will fully rely on Datadog for Monitoring (no cloudwatch stuff). The followin
 ...
 
 Access will be managed via an OpenLdap/FreeIPA/AD Server. Or just manually.
+
+###Things to improve:
+
+- work on how to make consul server really in a private subnet (nixops needs to support a jump hosts)
+-
