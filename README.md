@@ -24,10 +24,6 @@ resources to be created with NixOps:
 - S3 bucket to store vault backups.
 - IAM roles
 
-We will fully rely on Datadog for Monitoring (no cloudwatch stuff). The following needs to be monitored:
-- Hardware metrics: CPU, RAM, Disk, IO, Availablility
-- Running processes: SSHD, Vault, Consul server and client. (maybe others)
-- Making sure backups to s3 are running.
 ...
 
 Access will be managed via an OpenLdap/FreeIPA/AD Server. Or just manually.

@@ -1,5 +1,6 @@
 { config, pkgs, ... }:
 let
+  # remove this next nixos release when this is merged (https://github.com/NixOS/nixpkgs/pull/65166)
   vault-bin = with pkgs; stdenv.mkDerivation rec {
     name = "vault-${version}";
     version = "1.1.3";
