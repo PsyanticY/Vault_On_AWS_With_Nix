@@ -115,7 +115,7 @@ in
  imports = [ ./common.nix ./consul.nix ];
 
   networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [ 8500 ];
+  networking.firewall.allowedTCPPorts = [ 8500 8300 8302 8301 ];
 
   services.consulAws.enable = true;
   services.consulAws.server = true;

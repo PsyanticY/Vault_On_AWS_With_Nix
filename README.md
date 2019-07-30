@@ -1,8 +1,6 @@
 # Vault_On_AWS_With_Nix
 Fully NixOps managed HashiCorp Vault on AWS
 
-__WIP__
-
 ##
 The architecutre will be a bit different then the one AWS did provide, as it provided many resource that are uneeded.
 

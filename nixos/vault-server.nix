@@ -25,7 +25,7 @@ in
     export VAULT_ADDR=http://127.0.0.1:8201
   '';
   networking.firewall.enable = true;
-  networking.firewall.allowedTCPPorts = [ 8200 8500 ];
+  networking.firewall.allowedTCPPorts = [  8200 8500 8201 8301 8600 8400 ];
   systemd.services.vault.serviceConfig = {
     User = builtins.mkForce null;
     Group = builtins.mkForce null;
