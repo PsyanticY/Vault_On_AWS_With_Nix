@@ -5,6 +5,9 @@
   environment.systemPackages = with pkgs; [ vim python3 jq awscli tree curl consul];
   environment.shellAliases = { tailf = "tail -f" ;};
 
+  # Allowing bastion host to access servers as root
+  users.users.root.openssh.authorizedKeys.keyFiles = [ <global_creds/id_rsa.pub> ];
+
   environment.shellInit = ''
     export EDITOR=vim
     export HISTFILESIZE=50000
