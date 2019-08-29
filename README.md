@@ -30,4 +30,3 @@ Access will be managed via an OpenLdap/FreeIPA/AD Server. Or just manually.
 
 - work on how to make consul server really in a private subnet (nixops needs to support a jump hosts)
 - Work on datadog monitoring.
-- add a command resource to check for consul spot servers and act on spot loss
