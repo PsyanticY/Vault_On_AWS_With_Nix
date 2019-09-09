@@ -107,18 +107,18 @@ in {
     timerConfig.OnUnitActiveSec = "10m";
   };
 
-  systemd.services."consul-keys-check" = {
+  systemd.services."consul-keys-copy" = {
     description = "copy keys to spot instances recently spinned up";
     wantedBy = [ "multi-user.target" ];
     wants = [ "network-online.target" ];
     script = ''
       source /etc/profile
-      ${consul-keys-check}/bin/consul-keys-check
+      ${consul-keys-copy}/bin/consul-keys-copy
     '';
     serviceConfig.Type = "oneshot";
     serviceConfig.RemainAfterExit = true;
   };
-  systemd.timers."consul-keys-check" = {
+  systemd.timers."consul-keys-copy" = {
     description = "copy keys to spot instances recently spinned up";
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
