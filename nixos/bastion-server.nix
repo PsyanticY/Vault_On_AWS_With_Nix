@@ -97,7 +97,6 @@ in {
       ${consul-spot-check}/bin/consul-spot-check --backup
     '';
     serviceConfig.Type = "oneshot";
-    serviceConfig.RemainAfterExit = true;
   };
   systemd.timers."consul-spot-check" = {
     description = "check whether the consul spot instances are available";
@@ -116,7 +115,6 @@ in {
       ${consul-keys-copy}/bin/consul-keys-copy
     '';
     serviceConfig.Type = "oneshot";
-    serviceConfig.RemainAfterExit = true;
   };
   systemd.timers."consul-keys-copy" = {
     description = "copy keys to spot instances recently spinned up";
