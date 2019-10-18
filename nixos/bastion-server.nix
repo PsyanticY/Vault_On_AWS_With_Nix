@@ -41,9 +41,9 @@ let
         # we check consul instance via the sshd (22) and consul server (8500) ports
         # if only one of them time out we assume that the server is under some load or not responsive
         # if both time out the the server is for sure down.
-        nc -z -$TIMEOUT $i $SSHD_PORT 2>/dev/null
+        nc -z -w $TIMEOUT $i $SSHD_PORT 2>/dev/null
         if  [[ "$?" ==  "1" ]]; then
-          nc -z -$TIMEOUT $i $CONSUL_PORT 2>/dev/null
+          nc -z -w $TIMEOUT $i $CONSUL_PORT 2>/dev/null
           if [[ "$?" == "1" ]]; then
              log "[ERROR]: Can't reach $i via $SSHD_PORT or $CONSUL_PORT"
              log "[ERROR]: $i is down"
@@ -52,7 +52,7 @@ let
              log "[WARNING]: Can't reach $i via $CONSUL_PORT"
           fi
         else
-          nc -z -$TIMEOUT $i $CONSUL_PORT 2>/dev/null
+          nc -z -w $TIMEOUT $i $CONSUL_PORT 2>/dev/null
             if [[ "$?" == "1" ]]; then
                log "[WARNING]: Can't reach $i via $CONSUL_PORT"
             else
