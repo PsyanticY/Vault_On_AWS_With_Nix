@@ -57,6 +57,9 @@ let
           log "[ERROR] Could not archive backup archive to S3. Exiting."
           exit 1
         fi
+        log "[INFO] Removing Tar file and backup file..."
+        rm -rf $TAR_PATH
+        rm -rf $SNAP_NAME
 
 
       ###########
